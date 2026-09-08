@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>MediFamilia</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MediFamilia">
+<meta name="theme-color" content="#2F6F62">
+<style>
+  :root{
+    --ink:#1F2A24;--ink-soft:#5B6B62;--bg:#FAF9F6;--card:#FFFFFF;
+    --teal:#2F6F62;--teal-dark:#204F45;--sage:#E4EDE7;--amber:#DE9A3C;
+    --amber-soft:#FBEEDA;--line:#E4E1D8;--danger:#B4483A;--radius:14px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);padding-bottom:60px;}
+  h1,h2,h3{font-family:Georgia,"Iowan Old Style","Times New Roman",serif;font-weight:600;margin:0;}
+  header.top{padding:22px 18px 14px;background:var(--teal);color:#fff;border-radius:0 0 22px 22px;}
+  header.top h1{font-size:1.5rem;}
+  header.top p{margin:4px 0 0;font-size:.85rem;color:#DCEFE9;}
+  .profiles{display:flex;gap:8px;padding:14px 16px 0;overflow-x:auto;}
+  .profile-pill{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:8px 14px 8px 8px;border-radius:999px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-size:.92rem;color:var(--ink-soft);}
+  .profile-pill.active{background:var(--teal-dark);color:#fff;border-color:var(--teal-dark);}
+  .avatar{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;color:#fff;flex:0 0 auto;}
+  main{padding:16px;max-width:520px;margin:0 auto;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:16px;}
+  .card h2{font-size:1.05rem;margin-bottom:4px;}
+  .card .hint{font-size:.82rem;color:var(--ink-soft);margin:2px 0 12px;line-height:1.4;}
+  label.field{display:block;font-size:.82rem;color:var(--ink-soft);margin-bottom:6px;}
+  input[type=number],input[type=text],input[type=time]{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:9px;font-size:.95rem;background:#fff;color:var(--ink);}
+  .weight-row{display:flex;align-items:center;gap:10px;}
+  .weight-row input{width:90px;}
+  .weight-row span{color:var(--ink-soft);font-size:.85rem;}
+  button{font-family:inherit;cursor:pointer;border:none;border-radius:10px;padding:10px 14px;font-size:.9rem;font-weight:600;}
+  .btn-primary{background:var(--teal);color:#fff;}
+  .btn-ghost{background:var(--sage);color:var(--teal-dark);}
+  .btn-danger{background:transparent;color:var(--danger);padding:4px 6px;}
+  input[type=file]{display:none;}
+  .upload-zone{border:1.5px dashed var(--line);border-radius:12px;padding:18px;text-align:center;color:var(--ink-soft);font-size:.88rem;}
+  .upload-zone.busy{color:var(--teal-dark);}
+  .feedback-box{background:var(--amber-soft);border-radius:10px;padding:12px 14px;font-size:.88rem;line-height:1.5;margin-top:12px;color:#5B4420;}
+  table.meds-edit{width:100%;border-collapse:collapse;margin-top:12px;font-size:.85rem;}
+  table.meds-edit th{text-align:left;color:var(--ink-soft);font-weight:600;font-size:.75rem;padding-bottom:6px;}
+  table.meds-edit td{padding:6px 4px;vertical-align:top;}
+  table.meds-edit input{padding:6px 7px;font-size:.85rem;}
+  .day-group{margin-bottom:18px;}
+  .day-group h3{font-size:.95rem;color:var(--teal-dark);margin-bottom:8px;}
+  .dose-card{display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:8px;}
+  .dose-time{font-weight:700;font-size:.95rem;color:var(--teal-dark);min-width:48px;}
+  .dose-info{flex:1;}
+  .dose-info .name{font-weight:600;font-size:.92rem;}
+  .dose-info .qty{font-size:.8rem;color:var(--ink-soft);}
+  .dose-actions{display:flex;align-items:center;gap:8px;}
+  .alert-btn{background:transparent;padding:4px 6px;font-size:1.05rem;line-height:1;display:flex;align-items:center;gap:3px;color:var(--ink-soft);font-weight:500;}
+  .alert-btn.state-alarm{color:var(--danger);}
+  .alert-btn.state-notify{color:var(--teal-dark);}
+  .taken{opacity:.5;}
+  .taken .name{text-decoration:line-through;}
+  .empty{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:24px 10px;}
+  footer{max-width:520px;margin:0 auto;padding:0 16px 30px;font-size:.75rem;color:var(--ink-soft);line-height:1.5;}
+  #alarm-banner{position:fixed;top:0;left:0;right:0;background:var(--danger);color:#fff;padding:14px 16px;display:none;align-items:center;justify-content:space-between;z-index:50;font-size:.9rem;}
+  #alarm-banner button{background:#fff;color:var(--danger);}
+  #setup{position:fixed;inset:0;background:var(--bg);z-index:100;display:flex;align-items:center;justify-content:center;padding:24px;}
+  #setup .box{max-width:360px;width:100%;}
+  #sync-note{font-size:.72rem;color:var(--ink-soft);text-align:center;padding:6px;}
+</style>
+</head>
+<body>
+
+<div id="setup">
+  <div class="box">
+    <h1 style="margin-bottom:8px;">MediFamilia</h1>
+    <p class="hint" style="color:var(--ink-soft);font-size:.85rem;margin-bottom:16px;">Introduce un código de hogar. Usa el mismo código en todos los móviles de casa para compartir los perfiles y las pautas.</p>
+    <input type="text" id="code-input" placeholder="p. ej. casa-lopez-2026" autocapitalize="off">
+    <button class="btn-primary" style="width:100%;margin-top:12px;" onclick="joinHousehold()">Entrar</button>
+  </div>
+</div>
+
+<div id="alarm-banner">
+  <span id="alarm-text">Hora de medicación</span>
+  <button onclick="dismissAlarm()">Silenciar</button>
+</div>
+
+<header class="top">
+  <h1>MediFamilia</h1>
+  <p>Agenda de medicación para casa</p>
+</header>
+
+<div class="profiles" id="profiles"></div>
+
+<main>
+  <div class="card">
+    <h2 id="weight-title">Peso</h2>
+    <p class="hint">Solo como referencia — para comprobar que la pauta del informe corresponde al peso actual. La app no calcula dosis por sí sola.</p>
+    <div class="weight-row">
+      <input type="number" id="weight-input" min="0" step="0.1" placeholder="0">
+      <span>kg</span>
+      <button class="btn-ghost" onclick="saveWeight()">Guardar</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Analizar informe médico</h2>
+    <p class="hint">Haz una foto del informe. Lo leo, te doy un resumen en claro y te propongo la pauta para que la revises antes de guardarla — la confirmación final siempre es tuya (o de tu médico/farmacéutico).</p>
+    <label class="upload-zone" id="upload-zone" for="report-input">📷 Toca para hacer o subir una foto del informe</label>
+    <input type="file" id="report-input" accept="image/*" capture="environment">
+    <div id="analysis-result"></div>
+  </div>
+
+  <div class="card">
+    <h2>Notificaciones</h2>
+    <p class="hint">Actívalas para recibir el aviso a la hora de cada toma, aunque la app esté cerrada. En iPhone, primero añade esta web a la pantalla de inicio y ábrela desde ahí.</p>
+    <button class="btn-ghost" id="notif-btn" onclick="enablePush()">Activar notificaciones</button>
+  </div>
+
+  <h2 style="margin:20px 0 12px 4px;">Agenda — <span id="agenda-name"></span></h2>
+  <div id="agenda"></div>
+</main>
+
+<footer>
+  MediFamilia solo organiza lo que ya indica el informe médico. No sustituye el criterio de un médico o farmacéutico: ante cualquier duda sobre dosis, cantidad o combinación de medicamentos, consúltalo con ellos antes de administrar nada.
+</footer>
+<div id="sync-note"></div>
+
+<script>
+const VAPID_PUBLIC_KEY = 'BMmHrqEjyK6tE9SFA1ug869VmUDKgUATA0NzA0v6OxjXp8UK_bPaMmrqxJOfmYwyLJuVw9hbB200bXQnC9SEUcU';
+const PROFILES_META = [
+  {id:'borja', name:'Borja', color:'#2F6F62'},
+  {id:'citla', name:'Citla', color:'#B4483A'},
+  {id:'martina', name:'Martina', color:'#DE9A3C'},
+  {id:'diego', name:'Diego', color:'#5B6BA8'},
+];
+let state = { profiles:{}, meds:[] };
+let active = 'borja';
+let householdCode = localStorage.getItem('mf_code') || '';
+let notifiedKeys = new Set();
+
+function initials(n){ return n.slice(0,2).toUpperCase(); }
+function todayKey(off=0){ const d=new Date(); d.setDate(d.getDate()+off); return d.toISOString().slice(0,10); }
+function daysBetween(a,b){ return Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00'))/86400000); }
+function fmtDate(d){ return d.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'}); }
+function escapeHtml(s){ return (s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+async function apiGetState(){
+  const r = await fetch('/api/state?code='+encodeURIComponent(householdCode));
+  return await r.json();
+}
+let saveTimer=null;
+function scheduleSave(){
+  clearTimeout(saveTimer);
+  document.getElementById('sync-note').textContent='Guardando…';
+  saveTimer = setTimeout(async ()=>{
+    try{
+      await fetch('/api/state',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({code:householdCode, profiles:state.profiles, meds:state.meds})});
+      document.getElementById('sync-note').textContent='Sincronizado ✓';
+    }catch(e){ document.getElementById('sync-note').textContent='Sin conexión — se reintentará'; }
+  },500);
+}
+
+function joinHousehold(){
+  const v = document.getElementById('code-input').value.trim().toLowerCase().replace(/\s+/g,'-');
+  if(!/^[a-z0-9\-]{4,40}$/.test(v)){ alert('Usa 4-40 letras, números o guiones.'); return; }
+  householdCode = v; localStorage.setItem('mf_code', v);
+  document.getElementById('setup').style.display='none';
+  init();
+}
+
+async function init(){
+  if(!householdCode){ document.getElementById('setup').style.display='flex'; return; }
+  document.getElementById('setup').style.display='none';
+  const data = await apiGetState();
+  state = { profiles: data.profiles||{}, meds: data.meds||[] };
+  render();
+  // refresco periodico para ver cambios de otros moviles
+  setInterval(async ()=>{ const d=await apiGetState(); state={profiles:d.profiles||{},meds:d.meds||[]}; render(); }, 20000);
+}
+
+function renderProfiles(){
+  const el=document.getElementById('profiles'); el.innerHTML='';
+  PROFILES_META.forEach(p=>{
+    const b=document.createElement('div');
+    b.className='profile-pill'+(active===p.id?' active':'');
+    b.innerHTML=`<span class="avatar" style="background:${p.color}">${initials(p.name)}</span>${p.name}`;
+    b.onclick=()=>{active=p.id;render();};
+    el.appendChild(b);
+  });
+}
+function renderWeight(){
+  const p=PROFILES_META.find(x=>x.id===active);
+  document.getElementById('weight-title').textContent='Peso de '+p.name;
+  document.getElementById('weight-input').value=state.profiles[p.id]||'';
+}
+function saveWeight(){
+  const v=parseFloat(document.getElementById('weight-input').value);
+  if(!isNaN(v)){ state.profiles[active]=v; scheduleSave(); }
+}
+function renderAgenda(){
+  const p=PROFILES_META.find(x=>x.id===active);
+  document.getElementById('agenda-name').textContent=p.name;
+  const el=document.getElementById('agenda'); el.innerHTML='';
+  const meds=state.meds.filter(m=>m.profileId===active);
+  if(meds.length===0){ el.innerHTML='<div class="empty">Aún no hay medicación para este perfil.<br>Sube una foto del informe para empezar.</div>'; return; }
+  let maxOffset=0;
+  meds.forEach(m=>{ const s=daysBetween(todayKey(0),m.startDate||todayKey(0)); const e=s+(m.durationDays||1)-1; if(e>maxOffset)maxOffset=e; });
+  maxOffset=Math.min(maxOffset,60);
+  for(let off=0;off<=maxOffset;off++){
+    const dKey=todayKey(off); const dObj=new Date(); dObj.setDate(dObj.getDate()+off);
+    const g=document.createElement('div'); g.className='day-group';
+    const label=off===0?'Hoy':off===1?'Mañana':fmtDate(dObj);
+    g.innerHTML=`<h3>${label}</h3>`;
+    let rows=[];
+    meds.forEach(m=>{
+      const s=daysBetween(todayKey(0),m.startDate||todayKey(0)); const e=s+(m.durationDays||1)-1;
+      if(off<s||off>e)return;
+      (m.times||[]).forEach(t=>rows.push({med:m,time:t.time,alert:t.alert||'notify'}));
+    });
+    rows.sort((a,b)=>a.time.localeCompare(b.time));
+    if(rows.length===0){ g.innerHTML+='<div class="empty">Sin tomas programadas.</div>'; }
+    rows.forEach(r=>{
+      const logKey=dKey+'_'+r.time; const taken=!!(r.med.log&&r.med.log[logKey]);
+      const row=document.createElement('div'); row.className='dose-card'+(taken?' taken':'');
+      const lbl=r.alert==='alarm'?'⏰ Alarma':r.alert==='notify'?'🔔 Aviso':'— Sin aviso';
+      row.innerHTML=`<div class="dose-time">${r.time}</div>
+        <div class="dose-info"><div class="name">${escapeHtml(r.med.name)}</div>
+        <div class="qty">${escapeHtml(r.med.quantity||'')}${r.med.notes?' · '+escapeHtml(r.med.notes):''}</div></div>
+        <div class="dose-actions">
+          <button class="alert-btn state-${r.alert}" title="Cambiar tipo de aviso" onclick="cycleAlert('${r.med.id}','${r.time}')">${lbl}</button>
+          <input type="checkbox" ${taken?'checked':''} onchange="toggleTaken('${r.med.id}','${logKey}')">
+        </div>`;
+      g.appendChild(row);
+    });
+    el.appendChild(g);
+  }
+  const manage=document.createElement('div'); manage.className='card'; manage.innerHTML='<h2>Medicamentos guardados</h2>';
+  meds.forEach(m=>{
+    const row=document.createElement('div');
+    row.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--line);';
+    row.innerHTML=`<span style="font-size:.88rem;">${escapeHtml(m.name)} — ${escapeHtml(m.quantity||'')} (${(m.times||[]).map(t=>t.time).join(', ')}) · ${m.durationDays||1} días</span>
+      <button class="btn-danger" onclick="deleteMed('${m.id}')">Eliminar</button>`;
+    manage.appendChild(row);
+  });
+  el.appendChild(manage);
+}
+function cycleAlert(id,time){
+  const m=state.meds.find(x=>x.id===id); if(!m)return;
+  const order=['notify','alarm','none']; const t=(m.times||[]).find(x=>x.time===time); if(!t)return;
+  t.alert=order[(order.indexOf(t.alert||'notify')+1)%order.length]; scheduleSave(); render();
+}
+function toggleTaken(id,logKey){
+  const m=state.meds.find(x=>x.id===id); if(!m)return; if(!m.log)m.log={};
+  m.log[logKey]=!m.log[logKey]; scheduleSave(); render();
+}
+function deleteMed(id){ state.meds=state.meds.filter(x=>x.id!==id); scheduleSave(); render(); }
+function render(){ renderProfiles(); renderWeight(); renderAgenda(); }
+
+// --- Analisis de foto (via /api/analyze) ---
+document.getElementById('report-input').addEventListener('change', async (e)=>{
+  const file=e.target.files[0]; if(!file)return;
+  const zone=document.getElementById('upload-zone'); zone.textContent='⏳ Leyendo el informe...'; zone.classList.add('busy');
+  const resultEl=document.getElementById('analysis-result'); resultEl.innerHTML='';
+  try{
+    const base64=await fileToBase64(file);
+    const r=await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({imageData:base64, mediaType:file.type||'image/jpeg'})});
+    const data=await r.json();
+    let parsed;
+    try{ parsed=JSON.parse((data.text||'').replace(/```json|```/g,'').trim()); }
+    catch(err){ resultEl.innerHTML='<div class="feedback-box">No he podido interpretar el informe. Prueba con una foto más nítida.</div>'; return; }
+    showAnalysis(parsed);
+  }catch(err){ resultEl.innerHTML='<div class="feedback-box">Ha ocurrido un error leyendo la foto. Inténtalo de nuevo.</div>'; }
+  finally{ zone.textContent='📷 Toca para hacer o subir otra foto del informe'; zone.classList.remove('busy'); }
+});
+function fileToBase64(f){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result.split(',')[1]); r.onerror=rej; r.readAsDataURL(f); }); }
+
+let draftMeds=[];
+function showAnalysis(parsed){
+  draftMeds=(parsed.medications||[]).map((m,i)=>({tmpId:'d'+i,name:m.name||'',quantity:m.quantity||'',notes:m.notes||'',times:(m.times||[]).join(', '),duration:m.duration_days?String(m.duration_days):''}));
+  const el=document.getElementById('analysis-result');
+  el.innerHTML=`<div class="feedback-box">${escapeHtml(parsed.feedback||'')}</div>
+    <table class="meds-edit" id="draft-table"></table>
+    <p class="hint">Revisa y ajusta antes de guardar — las horas son una propuesta, y si el informe no indica los días, ponlos tú.</p>
+    <button class="btn-primary" onclick="saveDraftMeds()">Guardar en la agenda de ${PROFILES_META.find(p=>p.id===active).name}</button>`;
+  renderDraftTable();
+}
+function renderDraftTable(){
+  const t=document.getElementById('draft-table');
+  t.innerHTML=`<tr><th>Medicamento</th><th>Cantidad</th><th>Horas (HH:MM, coma)</th><th>Días</th></tr>`;
+  draftMeds.forEach((m,i)=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td><input type="text" value="${escapeHtml(m.name)}" onchange="draftMeds[${i}].name=this.value"></td>
+      <td><input type="text" value="${escapeHtml(m.quantity)}" onchange="draftMeds[${i}].quantity=this.value"></td>
+      <td><input type="text" value="${escapeHtml(m.times)}" onchange="draftMeds[${i}].times=this.value"></td>
+      <td><input type="number" min="1" style="width:56px" value="${escapeHtml(m.duration)}" onchange="draftMeds[${i}].duration=this.value"></td>`;
+    t.appendChild(tr);
+  });
+}
+function saveDraftMeds(){
+  draftMeds.forEach(m=>{
+    if(!m.name.trim())return;
+    state.meds.push({
+      id:'m'+Date.now()+Math.random().toString(36).slice(2,6),
+      profileId:active, name:m.name.trim(), quantity:m.quantity.trim(), notes:m.notes||'',
+      times:m.times.split(',').map(t=>t.trim()).filter(Boolean).map(t=>({time:t,alert:'notify'})),
+      startDate:todayKey(0), durationDays:parseInt(m.duration)||5, log:{}
+    });
+  });
+  scheduleSave();
+  document.getElementById('analysis-result').innerHTML=
+    `<div class="feedback-box">Guardado en la agenda ✓</div>
+     <div class="feedback-box" style="margin-top:8px;">Si esta frecuencia o cantidad te sorprende, coméntalo con el médico o el farmacéutico antes de la primera toma.</div>`;
+  render();
+}
+
+// --- Web push ---
+function urlBase64ToUint8Array(base64String){
+  const padding='='.repeat((4-base64String.length%4)%4);
+  const base64=(base64String+padding).replace(/-/g,'+').replace(/_/g,'/');
+  const raw=atob(base64); const arr=new Uint8Array(raw.length);
+  for(let i=0;i<raw.length;i++)arr[i]=raw.charCodeAt(i);
+  return arr;
+}
+async function enablePush(){
+  const btn=document.getElementById('notif-btn');
+  if(!('serviceWorker' in navigator) || !('PushManager' in window)){
+    alert('Este navegador no admite notificaciones push. En iPhone: añade la web a la pantalla de inicio y ábrela desde ahí.'); return;
+  }
+  try{
+    const perm=await Notification.requestPermission();
+    if(perm!=='granted'){ btn.textContent='Permiso no concedido'; return; }
+    const reg=await navigator.serviceWorker.register('/sw.js');
+    await navigator.serviceWorker.ready;
+    const sub=await reg.pushManager.subscribe({userVisibleOnly:true, applicationServerKey:urlBase64ToUint8Array(VAPID_PUBLIC_KEY)});
+    await fetch('/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:householdCode, subscription:sub})});
+    btn.textContent='Notificaciones activadas ✓';
+  }catch(e){ console.error(e); btn.textContent='No se pudo activar'; }
+}
+
+// --- Alarma sonora en primer plano ---
+let audioCtx, alarmInterval=null;
+function playAlarmTone(){ try{ audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)(); const o=audioCtx.createOscillator(),g=audioCtx.createGain(); o.type='sine'; o.frequency.value=880; o.connect(g); g.connect(audioCtx.destination); g.gain.setValueAtTime(0.15,audioCtx.currentTime); o.start(); o.stop(audioCtx.currentTime+0.35);}catch(e){} }
+function dismissAlarm(){ document.getElementById('alarm-banner').style.display='none'; if(alarmInterval){clearInterval(alarmInterval);alarmInterval=null;} }
+function checkForegroundAlarms(){
+  const now=new Date(); const nowStr=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  const dKey=todayKey(0);
+  state.meds.forEach(m=>{
+    const s=daysBetween(todayKey(0),m.startDate||todayKey(0)); const e=s+(m.durationDays||1)-1;
+    if(0<s||0>e)return;
+    (m.times||[]).forEach(t=>{
+      if(t.time===nowStr && t.alert==='alarm'){
+        const key=m.id+'_'+dKey+'_'+t.time; if(notifiedKeys.has(key))return; notifiedKeys.add(key);
+        const pn=(PROFILES_META.find(p=>p.id===m.profileId)||{}).name||'';
+        document.getElementById('alarm-text').textContent=`${pn}: ${m.name} (${t.time})`;
+        document.getElementById('alarm-banner').style.display='flex';
+        playAlarmTone(); if(alarmInterval)clearInterval(alarmInterval); alarmInterval=setInterval(playAlarmTone,2000);
+      }
+    });
+  });
+}
+setInterval(checkForegroundAlarms, 15000);
+
+if(householdCode){ document.getElementById('code-input')&&(document.getElementById('code-input').value=householdCode); }
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "name": "medifamilia",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Agenda de medicacion familiar con sincronizacion y web push",
+  "dependencies": {
+    "@upstash/redis": "^1.34.0",
+    "web-push": "^3.6.7"
+  }
+}
