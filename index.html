@@ -11,11 +11,7 @@
 <meta name="apple-mobile-web-app-title" content="MediFamilia">
 <meta name="theme-color" content="#2F6F62">
 <style>
-  :root{
-    --ink:#1F2A24;--ink-soft:#5B6B62;--bg:#FAF9F6;--card:#FFFFFF;
-    --teal:#2F6F62;--teal-dark:#204F45;--sage:#E4EDE7;--amber:#DE9A3C;
-    --amber-soft:#FBEEDA;--line:#E4E1D8;--danger:#B4483A;--radius:14px;
-  }
+  :root{--ink:#1F2A24;--ink-soft:#5B6B62;--bg:#FAF9F6;--card:#FFFFFF;--teal:#2F6F62;--teal-dark:#204F45;--sage:#E4EDE7;--amber:#DE9A3C;--amber-soft:#FBEEDA;--line:#E4E1D8;--danger:#B4483A;--radius:14px;}
   *{box-sizing:border-box;}
   body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);padding-bottom:60px;}
   h1,h2,h3{font-family:Georgia,"Iowan Old Style","Times New Roman",serif;font-weight:600;margin:0;}
@@ -30,7 +26,6 @@
   .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:16px;}
   .card h2{font-size:1.05rem;margin-bottom:4px;}
   .card .hint{font-size:.82rem;color:var(--ink-soft);margin:2px 0 12px;line-height:1.4;}
-  label.field{display:block;font-size:.82rem;color:var(--ink-soft);margin-bottom:6px;}
   input[type=number],input[type=text],input[type=time]{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:9px;font-size:.95rem;background:#fff;color:var(--ink);}
   .weight-row{display:flex;align-items:center;gap:10px;}
   .weight-row input{width:90px;}
@@ -47,6 +42,7 @@
   table.meds-edit th{text-align:left;color:var(--ink-soft);font-weight:600;font-size:.75rem;padding-bottom:6px;}
   table.meds-edit td{padding:6px 4px;vertical-align:top;}
   table.meds-edit input{padding:6px 7px;font-size:.85rem;}
+  .preview-line{font-size:.78rem;color:var(--teal-dark);margin:4px 0 10px;line-height:1.4;}
   .day-group{margin-bottom:18px;}
   .day-group h3{font-size:.95rem;color:var(--teal-dark);margin-bottom:8px;}
   .dose-card{display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:8px;}
@@ -75,37 +71,26 @@
   <div class="box">
     <h1 style="margin-bottom:8px;">MediFamilia</h1>
     <p class="hint" style="color:var(--ink-soft);font-size:.85rem;margin-bottom:16px;">Introduce un código de hogar. Usa el mismo código en todos los móviles de casa para compartir los perfiles y las pautas.</p>
-    <input type="text" id="code-input" placeholder="p. ej. casa-lopez-2026" autocapitalize="off">
+    <input type="text" id="code-input" placeholder="p. ej. casa-perez-campos" autocapitalize="off">
     <button class="btn-primary" style="width:100%;margin-top:12px;" onclick="joinHousehold()">Entrar</button>
   </div>
 </div>
 
-<div id="alarm-banner">
-  <span id="alarm-text">Hora de medicación</span>
-  <button onclick="dismissAlarm()">Silenciar</button>
-</div>
+<div id="alarm-banner"><span id="alarm-text">Hora de medicación</span><button onclick="dismissAlarm()">Silenciar</button></div>
 
-<header class="top">
-  <h1>MediFamilia</h1>
-  <p>Agenda de medicación para casa</p>
-</header>
-
+<header class="top"><h1>MediFamilia</h1><p>Agenda de medicación para casa</p></header>
 <div class="profiles" id="profiles"></div>
 
 <main>
   <div class="card">
     <h2 id="weight-title">Peso</h2>
     <p class="hint">Solo como referencia — para comprobar que la pauta del informe corresponde al peso actual. La app no calcula dosis por sí sola.</p>
-    <div class="weight-row">
-      <input type="number" id="weight-input" min="0" step="0.1" placeholder="0">
-      <span>kg</span>
-      <button class="btn-ghost" onclick="saveWeight()">Guardar</button>
-    </div>
+    <div class="weight-row"><input type="number" id="weight-input" min="0" step="0.1" placeholder="0"><span>kg</span><button class="btn-ghost" onclick="saveWeight()">Guardar</button></div>
   </div>
 
   <div class="card">
     <h2>Analizar informe médico</h2>
-    <p class="hint">Haz una foto del informe. Lo leo, te doy un resumen en claro y te propongo la pauta para que la revises antes de guardarla — la confirmación final siempre es tuya (o de tu médico/farmacéutico).</p>
+    <p class="hint">Haz una foto del informe. Lo leo, te doy un resumen en claro y te propongo el horario para que lo revises antes de guardarlo — la confirmación final siempre es tuya (o de tu médico/farmacéutico).</p>
     <label class="upload-zone" id="upload-zone" for="report-input">📷 Toca para hacer o subir una foto del informe</label>
     <input type="file" id="report-input" accept="image/*" capture="environment">
     <div id="analysis-result"></div>
@@ -121,9 +106,7 @@
   <div id="agenda"></div>
 </main>
 
-<footer>
-  MediFamilia solo organiza lo que ya indica el informe médico. No sustituye el criterio de un médico o farmacéutico: ante cualquier duda sobre dosis, cantidad o combinación de medicamentos, consúltalo con ellos antes de administrar nada.
-</footer>
+<footer>MediFamilia solo organiza lo que ya indica el informe médico. No sustituye el criterio de un médico o farmacéutico: ante cualquier duda sobre dosis, cantidad o combinación de medicamentos, consúltalo con ellos antes de administrar nada.</footer>
 <div id="sync-note"></div>
 
 <script>
@@ -140,10 +123,48 @@ let householdCode = localStorage.getItem('mf_code') || '';
 let notifiedKeys = new Set();
 
 function initials(n){ return n.slice(0,2).toUpperCase(); }
-function todayKey(off=0){ const d=new Date(); d.setDate(d.getDate()+off); return d.toISOString().slice(0,10); }
-function daysBetween(a,b){ return Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00'))/86400000); }
-function fmtDate(d){ return d.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'}); }
+function pad(n){ return String(n).padStart(2,'0'); }
+function dateKeyOffset(off){ const d=new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()+off); return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+function todayKey(){ return dateKeyOffset(0); }
+function offsetOfDay(dayKey){ const a=new Date(todayKey()+'T00:00:00'); const b=new Date(dayKey+'T00:00:00'); return Math.round((b-a)/86400000); }
+function fmtDate(dayKey){ const d=new Date(dayKey+'T00:00:00'); return d.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'}); }
 function escapeHtml(s){ return (s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function min2hhmm(m){ m=((m%1440)+1440)%1440; return pad(Math.floor(m/60))+':'+pad(m%60); }
+
+// --- Puntuacion de una hora del dia ---
+// Franjas buenas: manana 08:00-09:00 y tarde/noche 16:45-22:00.
+function timeScore(m){
+  if((m>=480&&m<=540)||(m>=1005&&m<=1320)) return 100; // ideal
+  if(m>=420&&m<480) return 70;   // 07:00-08:00
+  if(m>1320&&m<=1380) return 60; // 22:00-23:00
+  if(m>=540&&m<1005) return 20;  // colegio 09:00-16:45
+  return 0;                      // madrugada 23:00-07:00
+}
+function patternScore(phi, step){ let s=0; for(let t=phi; t<phi+1440; t+=step) s+=timeScore(((t%1440)+1440)%1440); return s; }
+function bestPhase(step){ let best=null; for(let phi=0; phi<1440; phi+=5){ const s=patternScore(phi,step); if(!best||s>best.s) best={phi,s}; } return best; }
+// Genera el calendario. Si la pauta natural (empezando a la hora dada) ya cae bien,
+// no la toca. Si no, estira el intervalo (solo hacia arriba, hasta +90 min por toma)
+// para arrastrar las tomas hacia el mejor patron estable posible.
+function genSchedule(intervalH, firstTime, durationDays){
+  const step = Math.round(intervalH*60), maxPerStep = 90;
+  const [fh,fm] = firstTime.split(':').map(Number);
+  const start = fh*60+fm;
+  const bp = bestPhase(step);
+  const natural = patternScore(((start%step)+step)%step, step);
+  const phi = (bp.s - natural >= 30) ? bp.phi : (((start%step)+step)%step);
+  let abs = start; const endAbs = durationDays*1440; const out=[]; let guard=0;
+  while(abs < endAbs && guard < 400){
+    out.push({dayOffset:Math.floor(abs/1440), time:min2hhmm(abs)});
+    const nominal = abs+step;
+    let k = Math.ceil((nominal-phi)/step); let aligned = phi+k*step; if(aligned<nominal) aligned+=step;
+    abs = nominal + Math.min(aligned-nominal, maxPerStep); guard++;
+  }
+  return out;
+}
+function schedulePreview(intervalH, firstTime, durationDays){
+  const s=genSchedule(intervalH, firstTime, Math.min(durationDays,2));
+  return s.slice(0,4).map(x=>x.time).join(' · ') + (s.length>4?' …':'');
+}
 
 async function apiGetState(){
   try{
@@ -161,30 +182,26 @@ let saveTimer=null;
 function scheduleSave(){
   clearTimeout(saveTimer);
   document.getElementById('sync-note').textContent='Guardando…';
-  saveTimer = setTimeout(async ()=>{
+  saveTimer=setTimeout(async ()=>{
     try{
-      await fetch('/api/state',{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({code:householdCode, profiles:state.profiles, meds:state.meds})});
+      await fetch('/api/state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:householdCode,profiles:state.profiles,meds:state.meds})});
       document.getElementById('sync-note').textContent='Sincronizado ✓';
     }catch(e){ document.getElementById('sync-note').textContent='Sin conexión — se reintentará'; }
   },500);
 }
 
 function joinHousehold(){
-  const v = document.getElementById('code-input').value.trim().toLowerCase().replace(/\s+/g,'-');
+  const v=document.getElementById('code-input').value.trim().toLowerCase().replace(/\s+/g,'-');
   if(!/^[a-z0-9\-]{4,40}$/.test(v)){ alert('Usa 4-40 letras, números o guiones.'); return; }
-  householdCode = v; localStorage.setItem('mf_code', v);
-  document.getElementById('setup').style.display='none';
-  init();
+  householdCode=v; localStorage.setItem('mf_code',v);
+  document.getElementById('setup').style.display='none'; init();
 }
-
 async function init(){
   if(!householdCode){ document.getElementById('setup').style.display='flex'; return; }
   document.getElementById('setup').style.display='none';
-  render(); // pintamos ya los perfiles y la agenda vacia, no dependen del servidor
-  const data = await apiGetState();
-  if(data){ state = { profiles: data.profiles||{}, meds: data.meds||[] }; render(); }
-  // refresco periodico para ver cambios de otros moviles
+  render();
+  const data=await apiGetState();
+  if(data){ state={profiles:data.profiles||{},meds:data.meds||[]}; render(); }
   setInterval(async ()=>{ const d=await apiGetState(); if(d){ state={profiles:d.profiles||{},meds:d.meds||[]}; render(); } }, 20000);
 }
 
@@ -203,79 +220,76 @@ function renderWeight(){
   document.getElementById('weight-title').textContent='Peso de '+p.name;
   document.getElementById('weight-input').value=state.profiles[p.id]||'';
 }
-function saveWeight(){
-  const v=parseFloat(document.getElementById('weight-input').value);
-  if(!isNaN(v)){ state.profiles[active]=v; scheduleSave(); }
-}
+function saveWeight(){ const v=parseFloat(document.getElementById('weight-input').value); if(!isNaN(v)){ state.profiles[active]=v; scheduleSave(); } }
+
 function renderAgenda(){
   const p=PROFILES_META.find(x=>x.id===active);
   document.getElementById('agenda-name').textContent=p.name;
   const el=document.getElementById('agenda'); el.innerHTML='';
   const meds=state.meds.filter(m=>m.profileId===active);
   if(meds.length===0){ el.innerHTML='<div class="empty">Aún no hay medicación para este perfil.<br>Sube una foto del informe para empezar.</div>'; return; }
-  let maxOffset=0;
-  meds.forEach(m=>{ const s=daysBetween(todayKey(0),m.startDate||todayKey(0)); const e=s+(m.durationDays||1)-1; if(e>maxOffset)maxOffset=e; });
-  maxOffset=Math.min(maxOffset,60);
-  for(let off=0;off<=maxOffset;off++){
-    const dKey=todayKey(off); const dObj=new Date(); dObj.setDate(dObj.getDate()+off);
+  const tk=todayKey();
+  // dias con tomas de hoy en adelante
+  const daySet=new Set();
+  meds.forEach(m=>(m.doses||[]).forEach(d=>{ if(d.day>=tk) daySet.add(d.day); }));
+  const days=[...daySet].sort();
+  if(days.length===0){ el.innerHTML='<div class="empty">No quedan tomas pendientes.</div>'; }
+  days.forEach(dayKey=>{
+    const off=offsetOfDay(dayKey);
     const g=document.createElement('div'); g.className='day-group';
-    const label=off===0?'Hoy':off===1?'Mañana':fmtDate(dObj);
+    const label=off===0?'Hoy':off===1?'Mañana':fmtDate(dayKey);
     g.innerHTML=`<h3>${label}</h3>`;
     let rows=[];
-    meds.forEach(m=>{
-      const s=daysBetween(todayKey(0),m.startDate||todayKey(0)); const e=s+(m.durationDays||1)-1;
-      if(off<s||off>e)return;
-      (m.times||[]).forEach(t=>rows.push({med:m,time:t.time,alert:t.alert||'notify'}));
-    });
-    rows.sort((a,b)=>a.time.localeCompare(b.time));
-    if(rows.length===0){ g.innerHTML+='<div class="empty">Sin tomas programadas.</div>'; }
+    meds.forEach(m=>(m.doses||[]).forEach((d,idx)=>{ if(d.day===dayKey) rows.push({med:m,dose:d,idx}); }));
+    rows.sort((a,b)=>a.dose.time.localeCompare(b.dose.time));
     rows.forEach(r=>{
-      const logKey=dKey+'_'+r.time; const taken=!!(r.med.log&&r.med.log[logKey]);
+      const logKey=r.dose.day+'_'+r.dose.time;
+      const taken=!!(r.med.log&&r.med.log[logKey]);
       const row=document.createElement('div'); row.className='dose-card'+(taken?' taken':'');
-      const lbl=r.alert==='alarm'?'⏰ Alarma':r.alert==='notify'?'🔔 Aviso':'— Sin aviso';
-      row.innerHTML=`<div class="dose-time">${r.time}</div>
+      const al=r.dose.alert||'notify';
+      const lbl=al==='alarm'?'⏰ Alarma':al==='notify'?'🔔 Aviso':'— Sin aviso';
+      row.innerHTML=`<div class="dose-time">${r.dose.time}</div>
         <div class="dose-info"><div class="name">${escapeHtml(r.med.name)}</div>
         <div class="qty">${escapeHtml(r.med.quantity||'')}${r.med.notes?' · '+escapeHtml(r.med.notes):''}</div></div>
         <div class="dose-actions">
-          <button class="alert-btn state-${r.alert}" title="Cambiar tipo de aviso" onclick="cycleAlert('${r.med.id}','${r.time}')">${lbl}</button>
+          <button class="alert-btn state-${al}" title="Cambiar tipo de aviso" onclick="cycleAlert('${r.med.id}','${r.dose.day}','${r.dose.time}')">${lbl}</button>
           <input type="checkbox" ${taken?'checked':''} onchange="toggleTaken('${r.med.id}','${logKey}')">
         </div>`;
       g.appendChild(row);
     });
     el.appendChild(g);
-  }
+  });
   const manage=document.createElement('div'); manage.className='card'; manage.innerHTML='<h2>Medicamentos guardados</h2>';
   meds.forEach(m=>{
     const row=document.createElement('div');
     row.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--line);';
-    row.innerHTML=`<span style="font-size:.88rem;">${escapeHtml(m.name)} — ${escapeHtml(m.quantity||'')} (${(m.times||[]).map(t=>t.time).join(', ')}) · ${m.durationDays||1} días</span>
+    const desc = m.intervalHours ? `cada ${m.intervalHours} h` : ((m.doses||[]).slice(0,3).map(d=>d.time).filter((v,i,a)=>a.indexOf(v)===i).join(', '));
+    row.innerHTML=`<span style="font-size:.88rem;">${escapeHtml(m.name)} — ${escapeHtml(m.quantity||'')} (${desc}) · ${m.durationDays||1} días</span>
       <button class="btn-danger" onclick="deleteMed('${m.id}')">Eliminar</button>`;
     manage.appendChild(row);
   });
   el.appendChild(manage);
 }
-function cycleAlert(id,time){
+function cycleAlert(id,day,time){
   const m=state.meds.find(x=>x.id===id); if(!m)return;
-  const order=['notify','alarm','none']; const t=(m.times||[]).find(x=>x.time===time); if(!t)return;
-  t.alert=order[(order.indexOf(t.alert||'notify')+1)%order.length]; scheduleSave(); render();
+  const order=['notify','alarm','none'];
+  const d=(m.doses||[]).find(x=>x.day===day&&x.time===time); if(!d)return;
+  d.alert=order[(order.indexOf(d.alert||'notify')+1)%order.length]; scheduleSave(); render();
 }
-function toggleTaken(id,logKey){
-  const m=state.meds.find(x=>x.id===id); if(!m)return; if(!m.log)m.log={};
-  m.log[logKey]=!m.log[logKey]; scheduleSave(); render();
-}
+function toggleTaken(id,logKey){ const m=state.meds.find(x=>x.id===id); if(!m)return; if(!m.log)m.log={}; m.log[logKey]=!m.log[logKey]; scheduleSave(); render(); }
 function deleteMed(id){ state.meds=state.meds.filter(x=>x.id!==id); scheduleSave(); render(); }
 function render(){ renderProfiles(); renderWeight(); renderAgenda(); }
 
-// --- Analisis de foto (via /api/analyze) ---
+// --- Analisis de foto ---
 document.getElementById('report-input').addEventListener('change', async (e)=>{
   const file=e.target.files[0]; if(!file)return;
   const zone=document.getElementById('upload-zone'); zone.textContent='⏳ Leyendo el informe...'; zone.classList.add('busy');
   const resultEl=document.getElementById('analysis-result'); resultEl.innerHTML='';
   try{
     const base64=await fileToBase64(file);
-    const r=await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({imageData:base64, mediaType:file.type||'image/jpeg'})});
+    const r=await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({imageData:base64,mediaType:file.type||'image/jpeg'})});
     const data=await r.json();
+    if(data.error){ resultEl.innerHTML='<div class="feedback-box">'+escapeHtml(data.error)+'</div>'; return; }
     let parsed;
     try{ parsed=JSON.parse((data.text||'').replace(/```json|```/g,'').trim()); }
     catch(err){ resultEl.innerHTML='<div class="feedback-box">No he podido interpretar el informe. Prueba con una foto más nítida.</div>'; return; }
@@ -286,35 +300,65 @@ document.getElementById('report-input').addEventListener('change', async (e)=>{
 function fileToBase64(f){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result.split(',')[1]); r.onerror=rej; r.readAsDataURL(f); }); }
 
 let draftMeds=[];
+function nowHHMM(){ const d=new Date(); return pad(d.getHours())+':'+pad(d.getMinutes()); }
 function showAnalysis(parsed){
-  draftMeds=(parsed.medications||[]).map((m,i)=>({tmpId:'d'+i,name:m.name||'',quantity:m.quantity||'',notes:m.notes||'',times:(m.times||[]).join(', '),duration:m.duration_days?String(m.duration_days):''}));
+  draftMeds=(parsed.medications||[]).map((m,i)=>({
+    name:m.name||'', quantity:m.quantity||'', notes:m.notes||'',
+    intervalHours: m.interval_hours ? Number(m.interval_hours) : '',
+    fixedTimes: (m.times && m.times.length) ? m.times.join(', ') : '',
+    firstTime: nowHHMM(),
+    duration: m.duration_days ? String(m.duration_days) : '5'
+  }));
   const el=document.getElementById('analysis-result');
   el.innerHTML=`<div class="feedback-box">${escapeHtml(parsed.feedback||'')}</div>
-    <table class="meds-edit" id="draft-table"></table>
-    <p class="hint">Revisa y ajusta antes de guardar — las horas son una propuesta, y si el informe no indica los días, ponlos tú.</p>
+    <div id="draft-rows"></div>
+    <p class="hint">La app arranca la primera toma a la hora actual y va desplazando las siguientes para caer, dentro de lo posible, entre 08:00-09:00 o 16:45-22:00, evitando el colegio y la madrugada. Revisa y ajusta antes de guardar.</p>
     <button class="btn-primary" onclick="saveDraftMeds()">Guardar en la agenda de ${PROFILES_META.find(p=>p.id===active).name}</button>`;
-  renderDraftTable();
+  renderDraftRows();
 }
-function renderDraftTable(){
-  const t=document.getElementById('draft-table');
-  t.innerHTML=`<tr><th>Medicamento</th><th>Cantidad</th><th>Horas (HH:MM, coma)</th><th>Días</th></tr>`;
+function renderDraftRows(){
+  const c=document.getElementById('draft-rows'); c.innerHTML='';
   draftMeds.forEach((m,i)=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td><input type="text" value="${escapeHtml(m.name)}" onchange="draftMeds[${i}].name=this.value"></td>
-      <td><input type="text" value="${escapeHtml(m.quantity)}" onchange="draftMeds[${i}].quantity=this.value"></td>
-      <td><input type="text" value="${escapeHtml(m.times)}" onchange="draftMeds[${i}].times=this.value"></td>
-      <td><input type="number" min="1" style="width:56px" value="${escapeHtml(m.duration)}" onchange="draftMeds[${i}].duration=this.value"></td>`;
-    t.appendChild(tr);
+    const wrap=document.createElement('div'); wrap.style.cssText='border-top:1px solid var(--line);padding-top:10px;margin-top:10px;';
+    const strict = m.intervalHours!=='' && !isNaN(Number(m.intervalHours));
+    let preview='';
+    if(strict) preview='Horario propuesto: '+schedulePreview(Number(m.intervalHours), m.firstTime, Number(m.duration)||2);
+    else if(m.fixedTimes) preview='Horas fijas cada día: '+m.fixedTimes;
+    wrap.innerHTML=`
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <input type="text" style="flex:2;min-width:120px" value="${escapeHtml(m.name)}" placeholder="Medicamento" onchange="draftMeds[${i}].name=this.value">
+        <input type="text" style="flex:1;min-width:70px" value="${escapeHtml(m.quantity)}" placeholder="Cantidad" onchange="draftMeds[${i}].quantity=this.value">
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;align-items:center;">
+        <span style="font-size:.75rem;color:var(--ink-soft)">Cada</span>
+        <input type="number" style="width:56px" min="1" step="0.5" value="${escapeHtml(String(m.intervalHours))}" placeholder="h" onchange="draftMeds[${i}].intervalHours=this.value;renderDraftRows();">
+        <span style="font-size:.75rem;color:var(--ink-soft)">h · 1ª toma</span>
+        <input type="text" style="width:64px" value="${escapeHtml(m.firstTime)}" onchange="draftMeds[${i}].firstTime=this.value;renderDraftRows();">
+        <span style="font-size:.75rem;color:var(--ink-soft)">· días</span>
+        <input type="number" style="width:52px" min="1" value="${escapeHtml(m.duration)}" onchange="draftMeds[${i}].duration=this.value;renderDraftRows();">
+      </div>
+      ${strict?'':`<div style="margin-top:6px;"><input type="text" value="${escapeHtml(m.fixedTimes)}" placeholder="Horas fijas HH:MM, coma (si no hay intervalo)" onchange="draftMeds[${i}].fixedTimes=this.value;renderDraftRows();"></div>`}
+      <div class="preview-line">${escapeHtml(preview)}</div>`;
+    c.appendChild(wrap);
   });
 }
 function saveDraftMeds(){
   draftMeds.forEach(m=>{
     if(!m.name.trim())return;
+    const dur=parseInt(m.duration)||5;
+    let doses=[];
+    const strict = m.intervalHours!=='' && !isNaN(Number(m.intervalHours)) && Number(m.intervalHours)>0;
+    if(strict){
+      const sched=genSchedule(Number(m.intervalHours), (m.firstTime||nowHHMM()).trim(), dur);
+      doses=sched.map(s=>({day:dateKeyOffset(s.dayOffset), time:s.time, alert:'notify'}));
+    }else{
+      const times=(m.fixedTimes||'').split(',').map(t=>t.trim()).filter(Boolean);
+      for(let off=0; off<dur; off++) times.forEach(t=>doses.push({day:dateKeyOffset(off), time:t, alert:'notify'}));
+    }
     state.meds.push({
       id:'m'+Date.now()+Math.random().toString(36).slice(2,6),
       profileId:active, name:m.name.trim(), quantity:m.quantity.trim(), notes:m.notes||'',
-      times:m.times.split(',').map(t=>t.trim()).filter(Boolean).map(t=>({time:t,alert:'notify'})),
-      startDate:todayKey(0), durationDays:parseInt(m.duration)||5, log:{}
+      intervalHours: strict?Number(m.intervalHours):null, durationDays:dur, doses, log:{}
     });
   });
   scheduleSave();
@@ -325,25 +369,16 @@ function saveDraftMeds(){
 }
 
 // --- Web push ---
-function urlBase64ToUint8Array(base64String){
-  const padding='='.repeat((4-base64String.length%4)%4);
-  const base64=(base64String+padding).replace(/-/g,'+').replace(/_/g,'/');
-  const raw=atob(base64); const arr=new Uint8Array(raw.length);
-  for(let i=0;i<raw.length;i++)arr[i]=raw.charCodeAt(i);
-  return arr;
-}
+function urlBase64ToUint8Array(s){ const p='='.repeat((4-s.length%4)%4); const b=(s+p).replace(/-/g,'+').replace(/_/g,'/'); const raw=atob(b); const a=new Uint8Array(raw.length); for(let i=0;i<raw.length;i++)a[i]=raw.charCodeAt(i); return a; }
 async function enablePush(){
   const btn=document.getElementById('notif-btn');
-  if(!('serviceWorker' in navigator) || !('PushManager' in window)){
-    alert('Este navegador no admite notificaciones push. En iPhone: añade la web a la pantalla de inicio y ábrela desde ahí.'); return;
-  }
+  if(!('serviceWorker' in navigator)||!('PushManager' in window)){ alert('Este navegador no admite notificaciones push. En iPhone: añade la web a la pantalla de inicio y ábrela desde ahí.'); return; }
   try{
     const perm=await Notification.requestPermission();
     if(perm!=='granted'){ btn.textContent='Permiso no concedido'; return; }
-    const reg=await navigator.serviceWorker.register('/sw.js');
-    await navigator.serviceWorker.ready;
+    const reg=await navigator.serviceWorker.register('/sw.js'); await navigator.serviceWorker.ready;
     const sub=await reg.pushManager.subscribe({userVisibleOnly:true, applicationServerKey:urlBase64ToUint8Array(VAPID_PUBLIC_KEY)});
-    await fetch('/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:householdCode, subscription:sub})});
+    await fetch('/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:householdCode,subscription:sub})});
     btn.textContent='Notificaciones activadas ✓';
   }catch(e){ console.error(e); btn.textContent='No se pudo activar'; }
 }
@@ -353,25 +388,20 @@ let audioCtx, alarmInterval=null;
 function playAlarmTone(){ try{ audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)(); const o=audioCtx.createOscillator(),g=audioCtx.createGain(); o.type='sine'; o.frequency.value=880; o.connect(g); g.connect(audioCtx.destination); g.gain.setValueAtTime(0.15,audioCtx.currentTime); o.start(); o.stop(audioCtx.currentTime+0.35);}catch(e){} }
 function dismissAlarm(){ document.getElementById('alarm-banner').style.display='none'; if(alarmInterval){clearInterval(alarmInterval);alarmInterval=null;} }
 function checkForegroundAlarms(){
-  const now=new Date(); const nowStr=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
-  const dKey=todayKey(0);
-  state.meds.forEach(m=>{
-    const s=daysBetween(todayKey(0),m.startDate||todayKey(0)); const e=s+(m.durationDays||1)-1;
-    if(0<s||0>e)return;
-    (m.times||[]).forEach(t=>{
-      if(t.time===nowStr && t.alert==='alarm'){
-        const key=m.id+'_'+dKey+'_'+t.time; if(notifiedKeys.has(key))return; notifiedKeys.add(key);
-        const pn=(PROFILES_META.find(p=>p.id===m.profileId)||{}).name||'';
-        document.getElementById('alarm-text').textContent=`${pn}: ${m.name} (${t.time})`;
-        document.getElementById('alarm-banner').style.display='flex';
-        playAlarmTone(); if(alarmInterval)clearInterval(alarmInterval); alarmInterval=setInterval(playAlarmTone,2000);
-      }
-    });
-  });
+  const tk=todayKey(); const nowStr=nowHHMM();
+  state.meds.forEach(m=>(m.doses||[]).forEach(d=>{
+    if(d.day===tk && d.time===nowStr && d.alert==='alarm'){
+      const key=m.id+'_'+tk+'_'+d.time; if(notifiedKeys.has(key))return; notifiedKeys.add(key);
+      const pn=(PROFILES_META.find(p=>p.id===m.profileId)||{}).name||'';
+      document.getElementById('alarm-text').textContent=`${pn}: ${m.name} (${d.time})`;
+      document.getElementById('alarm-banner').style.display='flex';
+      playAlarmTone(); if(alarmInterval)clearInterval(alarmInterval); alarmInterval=setInterval(playAlarmTone,2000);
+    }
+  }));
 }
 setInterval(checkForegroundAlarms, 15000);
 
-if(householdCode){ document.getElementById('code-input')&&(document.getElementById('code-input').value=householdCode); }
+if(householdCode) document.getElementById('code-input').value=householdCode;
 init();
 </script>
 </body>
