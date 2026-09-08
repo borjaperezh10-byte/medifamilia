@@ -146,8 +146,16 @@ function fmtDate(d){ return d.toLocaleDateString('es-ES',{weekday:'long',day:'nu
 function escapeHtml(s){ return (s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
 async function apiGetState(){
-  const r = await fetch('/api/state?code='+encodeURIComponent(householdCode));
-  return await r.json();
+  try{
+    const r = await fetch('/api/state?code='+encodeURIComponent(householdCode));
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const d = await r.json();
+    document.getElementById('sync-note').textContent='Sincronizado ✓';
+    return d;
+  }catch(e){
+    document.getElementById('sync-note').textContent='Sin conexión con la base de datos — revisa las variables de Upstash en Vercel';
+    return null;
+  }
 }
 let saveTimer=null;
 function scheduleSave(){
@@ -173,11 +181,11 @@ function joinHousehold(){
 async function init(){
   if(!householdCode){ document.getElementById('setup').style.display='flex'; return; }
   document.getElementById('setup').style.display='none';
+  render(); // pintamos ya los perfiles y la agenda vacia, no dependen del servidor
   const data = await apiGetState();
-  state = { profiles: data.profiles||{}, meds: data.meds||[] };
-  render();
+  if(data){ state = { profiles: data.profiles||{}, meds: data.meds||[] }; render(); }
   // refresco periodico para ver cambios de otros moviles
-  setInterval(async ()=>{ const d=await apiGetState(); state={profiles:d.profiles||{},meds:d.meds||[]}; render(); }, 20000);
+  setInterval(async ()=>{ const d=await apiGetState(); if(d){ state={profiles:d.profiles||{},meds:d.meds||[]}; render(); } }, 20000);
 }
 
 function renderProfiles(){
